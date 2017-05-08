@@ -2,20 +2,18 @@
 require("db_control.php");
 $database = new DB_Control();
 
-class Login {
-	function PrintLoginForm(){		
-		echo "<form method=\"post\" action=\"login.php\">
-			  <p>Username:<input type=\"text\" name=\"username\" /></p>
-			  <p>Password: <input type=\"password\" name=\"password\" /></p>
-			  <input type=\"submit\" name=\"submit\" value=\"login\" />
-			  <input type=\"submit\" name=\"submit\" value=\"register\" />
-			  </form>";
-	}
+function PrintLoginForm(){		
+	echo "<form method=\"post\" action=\"login.php\">
+		  <p>Username:<input type=\"text\" name=\"username\" /></p>
+		  <p>Password: <input type=\"password\" name=\"password\" /></p>
+		  <input type=\"submit\" name=\"submit\" value=\"login\" />
+		  <input type=\"submit\" name=\"submit\" value=\"register\" />
+		  </form>";
 }
-$loginObj = new Login();
+
 if (!isset($_POST['submit'])){
 	//header('location: ./index.php');
-	$loginObj->PrintLoginForm();
+	PrintLoginForm();
 } else {
 	$submitVar = $_POST['submit'];
 	session_start();
