@@ -2,7 +2,7 @@
 require("infos_db_connect.php");
 
 class DB_Control{
-	private $connection;
+	protected $connection;
 	
 	function __construct(){
 		global $servername, $username, $password, $dbname;
@@ -10,7 +10,7 @@ class DB_Control{
 		if ($this->connection->connect_error) {
 			die("Connection failed: " . $this->connection->connect_error);
 		} else {
-			echo "db connected<br/>";
+			//echo "db connected<br/>"; //was just to check for proper connection
 		}
 	}
 	
@@ -22,7 +22,7 @@ class DB_Control{
 		if (strlen($password)<4){
 			return 0;
 		}
-		$regQuery = $this->connection->prepare("INSERT INTO users (id, username, hashedPW) VALUE (NULL, ?, ?);");
+		$regQuery = $this->connection->prepare("INSERT INTO users (userid, username, hashedPW) VALUE (NULL, ?, ?);");
 		$regQuery->bind_param("ss", $userName, password_hash($password, PASSWORD_BCRYPT));
 		$regQuery->execute();
 		return $regQuery->affected_rows;
@@ -30,13 +30,12 @@ class DB_Control{
 	
 	function LoginCheck($userName, $password){
 		$regQuery = $this->connection->prepare("SELECT hashedPW FROM users WHERE username LIKE ?;");
-		$regQuery->bind_param("s", $userName);
+		$regQuery->bind_param('s', $userName);
 		$regQuery->execute();
 		$regQuery->bind_result($hashedPW);
 		$regQuery->fetch();
 		$result = password_verify($password, $hashedPW);
-		return $result;
-		
+		return $result;		
 	}
 }
 

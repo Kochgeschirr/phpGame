@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (isset($_SESSION['username'])){
+	header('location: ./main/');
+	exit();
+}
 require("db_control.php");
 $database = new DB_Control();
 
@@ -10,19 +15,23 @@ function PrintLoginForm(){
 		  <input type=\"submit\" name=\"submit\" value=\"register\" />
 		  </form>";
 }
-
 if (!isset($_POST['submit'])){
 	//header('location: ./index.php');
 	PrintLoginForm();
 } else {
 	$submitVar = $_POST['submit'];
+	$_SESSION = array();
+	if (isset($_SESSION)){
+		session_destroy();
+	}	
 	session_start();
 	$user = $_POST['username'];
 	$pw = $_POST['password'];
 	if( $submitVar=="login" ){
 		$loginResult = $database->LoginCheck($user,$pw);
 		if($loginResult){
-			header('location: ./main/index.php');
+			$_SESSION['username'] = $user;
+			header('location: ./main/');
 			exit();
 		} else {
 			echo "Could not Login.";			
@@ -32,14 +41,13 @@ if (!isset($_POST['submit'])){
 		if ($queryResult < 0){
 			echo "user does already exist";
 		} else if($queryResult>0){
+			$_SESSION['username'] = $user;
 			echo "registration successful :-)";
+			echo "\n<br/><a href=\"./main/\">weiter</a><br/>";
 		} else {
 			echo "could not register, maybe password too short?";
-		}?>
-		<br/><a href="./">Back</a>
-		<?php
-		//header('location: ./main/index.php');
-		//exit();
+		}
+		echo "<br/><a href=\"./\">Back</a>";
 	}
 }
 ?>
